@@ -4,27 +4,29 @@ truth table program
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.regex.Pattern;
+
 import javax.swing.event.*;
 
 public class TablePanel extends JPanel {
 
 	private int width, height;
-	private JTextField one;
 	private JPanel main, top, bottom, sub, command;
-	private JButton enter, reset, back, p, q, r, neg, or ,and, imp, open, close;
-	private JTextArea eq;
+	private JButton enter, reset, back, p, q, r, neg, or ,and, imp, open, close, xor;
+	private JTextArea eq, output;
 	
 	public TablePanel()
 	{
 		
-		//command buttons 
-		one = new JTextField();
+		//command buttons, textArea 
 		enter = new JButton("Enter");
 		enter.addActionListener(new ButtonListener());
 		reset = new JButton("Reset");
 		reset.addActionListener(new ButtonListener());
 		eq = new JTextArea();
+		output = new JTextArea();
 		
+		//variable buttons
 		p = new JButton("p");
 		p.addActionListener(new ButtonListener());
 		q = new JButton("q");
@@ -32,15 +34,19 @@ public class TablePanel extends JPanel {
 		r = new JButton("r");
 		r.addActionListener(new ButtonListener());
 		
-		neg = new JButton("~");
+		//propositional logic
+		neg = new JButton("NOT");
 		neg.addActionListener(new ButtonListener());
-		or = new JButton("v");
+		or = new JButton("OR");
 		or.addActionListener(new ButtonListener());
-		and = new JButton("^");
+		and = new JButton("AND");
 		and.addActionListener(new ButtonListener());
-		imp = new JButton("->");
+		imp = new JButton("IMPLIES");
 		imp.addActionListener(new ButtonListener());
+		xor = new JButton("IFF");
+		xor.addActionListener(new ButtonListener());
 		
+		//parenthesis and backspace
 		open = new JButton("(");
 		open.addActionListener(new ButtonListener());
 		close = new JButton(")");
@@ -48,19 +54,21 @@ public class TablePanel extends JPanel {
 		back = new JButton("backspace");
 		back.addActionListener(new ButtonListener());
 		
+		//command calculator top JPanel
 		command = new JPanel(new GridLayout(2,5));
-		command.add(neg);
 		command.add(p);
 		command.add(q);
 		command.add(r);
+		command.add(neg);
 		command.add(open);
 		command.add(close);
 		command.add(and);
 		command.add(or);
+		command.add(xor);
 		command.add(imp);
 		
 		
-		//sub panel consists of the text field, enter and reset buttons
+		//sub panel consists of enter, backspace and reset buttons
 		sub = new JPanel();
 		sub.setLayout(new GridLayout(1,3));
 		sub.add(enter);
@@ -75,7 +83,9 @@ public class TablePanel extends JPanel {
 	
 		
 		//bottom panel consists of the generated truth table from the top panel
-		bottom = new JPanel(new GridLayout(1,4));
+		bottom = new JPanel(new GridLayout(1,1));
+		bottom.add(output);
+		
 		
 		//main panel, combination of top and bottom panel
 		main = new JPanel();
@@ -122,26 +132,699 @@ public class TablePanel extends JPanel {
 			 if (buttonX == close){
 				 eq.setText(eq.getText() + ")");
 			 }
-			  if (buttonX == back){
+			 if (buttonX == xor){
+				 eq.setText(eq.getText() + "<->");
+			 }
+				 
+			 if (buttonX == back){
 				 if(eq.getText() != null)
 				 {
 					 String eq1 = eq.getText();
 					 eq.setText(eq1.substring(0, eq1.length()-1));	 
 				 }
 			 }
+			 
 			if (buttonX == reset){
 				eq.setText(null);
+				output.setText(null);
 			}
 			
 			
-			
-			
-			}
-		
-	}
-	
-	
-}
-	
-	
+			 boolean a, b, c;
+		       String text = eq.getText(); 
+		 if (buttonX == enter ){	//enter button
+			 
+			 //single variable 
+			 if (text.equals("p")){
+				 a = false;
+				 System.out.println("p");
+				 output.setText("p");
+				 do {
+					 System.out.println(a);
+					 output.setText(output.getText() + "\n" + a);
+					 a = !a;
+				 } while (a);
+			 }
+			 
+			 if (text.equals("q")){
+				 a = false;
+				 System.out.println("q");
+				 output.setText("q");
+				 do {
+					 System.out.println(a);
+					 output.setText(output.getText() + "\n" + a);
+					 a = !a;
+				 } while (a);
+			 }
+			 
+			 if (text.equals("r")){
+				 a = false;
+				 System.out.println("r");
+				 output.setText("r");
+				 do {
+					 System.out.println(a);
+					 output.setText(output.getText() + "\n" + a);
+					 a = !a;
+				 } while (a);
+			 }
+			 
+			 if (text.equals("~p")){
+				 a = false;
+				 System.out.println("p\t~p");
+				 output.setText("p\t~p");
+				 do {
+					 System.out.println(a + "\t" + !a);
+					 output.setText(output.getText() + "\n" + a + "\t" + !a);
+					 a = !a;
+				 } while (a);
+			 }
+				 
+			 if (text.equals("~q")){
+				 a = false;
+				 System.out.println("q\t~q");
+				 output.setText("q\t~q");
+				 do {
+					 System.out.println(a + "\t" + !a);
+					 output.setText(output.getText() + "\n" + a + "\t" + !a);
+					 a = !a;
+				 } while (a);
+			 }
+			 
+			 if (text.equals("~r")){
+				 a = false;
+				 System.out.println("r\t~r");
+				 output.setText("r\t~r");
+				 do {
+					 System.out.println(a + "\t" + !a);
+					 output.setText(output.getText() + "\n" + a + "\t" + !a);
+					 a = !a;
+				 } while (a);
+			 }
+			 
+			 //end of single variable
+				 
+			 // Two variable cases
+		        
+		       if (text.equals("p^q") || text.equals("q^p") ){	// p AND q
+		                    a = false;
+		                    System.out.println("p\tq\tp and q");
+		                    output.setText("p\tq\tp and q");
+		                    do {
+		                          b = false;
+		                          do {
+		                                System.out.println(a + "\t" + b + "\t" + (a && b));
+		                                output.setText(output.getText()+ "\n" + a + "\t" + b + "\t" + (a && b));
+		                                b = !b;
+		                          } while (b);
+		                          a = !a;
+		                    } while (a);
+		       }
 
+		       else if (text.equals("pvq") || text.equals( "qvp")){  // p OR q
+		                    a = false;
+		                    System.out.println("p\tq\tp or q");
+		                    output.setText("p\tq\tp or q");
+		                    do {
+		                          b = false;
+		                          do {
+		                                System.out.println(a + "\t" + b + "\t" + (a || b));
+		                                output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + (a || b));
+		                                b = !b;
+		                          } while (b);
+		                          a = !a;
+		                    } while (a);
+		       }
+		       
+		       else if (text.equals("~p^q") || text.equals("q^~p")) {	// NOT p AND q
+	                a = false;
+	                System.out.println("p\tq\t~p\tnot p and q");
+	                output.setText("p\tq\t~p\tnot p and q");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !a + "\t" + (!a && b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + (!a && b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+		       }
+	    	
+		       else if (text.equals("p^~q") || text.equals( "~q^p")) {	// p AND NOT q
+	                a = false;
+	                System.out.println("p\tq\t~q\tp and not q");
+	                output.setText("p\tq\t~q\tp and not q");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !b + "\t" + (a && !b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !b + "\t" + (a && !b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+		       }
+	    	
+	           else if (text.equals("~p^~q") || text.equals("~q^~p")) {	// NOT p AND NOT q
+	                a = false;
+	                System.out.println("p\tq\t~p\t~q\tnot p & not q");
+	                output.setText("p\tq\t~p\t~q\tnot p & not q");
+	                do {
+	                	  b = false;
+	                	  do {
+	                			System.out.println(a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (!a && !b));
+	                			output.setText(output.getText()+ "\n" + a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (!a && !b));
+	                			b = !b;
+	                	  } while (b);
+	                	  a = !a;
+	                } while (a);
+	           }
+
+	           else if (text.equals("~pvq") || text.equals("qv~p")) { 	// NOT p OR q
+	                a = false;
+	                System.out.println("p\tq\t~p\tnot p or q");
+	                output.setText("p\tq\t~p\tnot p or q");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !a + "\t" + (!a || b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + (!a || b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+	               
+	           else if (text.equals("pv~q") || text.equals("~qvp")) {	// p OR NOT q
+	                a = false;
+	                System.out.println("p\tq\t~q\tp or not q");
+	                output.setText("p\tq\t~q\tp or not q");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !b + "\t" + (a || !b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !b + "\t" + (a || !b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+	           
+	           else if (text.equals("~pv~q") || text.equals("~qv~p")) {	// NOT p OR NOT q
+	        	    a = false;
+	        	    System.out.println("p\tq\t~p\t~q\tnot p or not q");
+	        	    output.setText("p\tq\t~p\t~q\tnot p or not q");
+	        	    do {
+	        	    	  b = false;
+	        	    	  do {
+	        	    		  	System.out.println(a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (!a || !b));
+	        	    		  	output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (!a || !b));
+	        	    		  	b = !b;
+	        	    	  } while (b);
+	        	    	  a = !a;
+	        	    } while (a);
+	           }
+		       
+	           else if (text.equals("p->q")) {       // p IMPLIES q  
+	                a = false;
+	                System.out.println("p\tq\tp implies q");
+	                output.setText("p\tq\tp implies q");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + (!a || b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + (!a || b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+		       
+	           else if (text.equals("~p->q")) {  	// NOT p IMPLIES q
+	                a = false;
+	                System.out.println("p\tq\t~p\tnot p implies q");
+	                output.setText("p\tq\t~p\tnot p implies q");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !a + "\t" + (a || b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + (a || b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+		       
+	           else if (text.equals("p->~q")) {		// p IMPLIES NOT q
+	        	   	a = false;
+	        	   	System.out.println("p\tq\t~q\tp implies not q");
+	        	   	output.setText("p\tq\t~q\tp implies not q");
+	        	   	do {
+	        	   		  b = false;
+	        	   		  do {
+	        	   			  	System.out.println(a + "\t" + b + "\t" + !b + "\t" + (!a || !b));
+	        	   			  	output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !b + "\t" + (!a || !b));
+	        	   			  	b = !b;
+	        	   		  } while (b);
+	        	   		  a = !a;
+	        	   	} while (a);
+	           }
+		       
+	           else if (text.equals("~p->~q")){ 	// NOT p IMPLIES NOT q
+	        	    a = false;
+	        	    System.out.println("p\tq\t~p\t~q\tnot p implies not q");
+	        	    output.setText("p\tq\t~p\t~q\tnot p implies not q");
+	        	    do {
+	        	    	b = false;
+	        	    	do{
+	        	    		System.out.println(a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (a || !b));
+	        	    		output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (a || !b));
+	        	    		b = !b;
+	        	    	} while (b);
+	        	    	a = !a;
+	        	    } while (a);
+	           }
+
+	           else if (text.equals("q->p")) {		// q IMPLIES p
+	                a = false;
+	                System.out.println("p\tq\tq implies p");
+	                output.setText("p\tq\tq implies p");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + (a || !b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + (a || !b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+	
+	           else if (text.equals("~q->p")) {		// NOT q IMPLIES p
+	                a = false;
+	                System.out.println("p\tq\t~q\tnot q implies p");
+	                output.setText("p\tq\t~q\tnot q implies p");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !b + "\t" + (a || b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !b + "\t" + (a || b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+	           
+	           else if (text.equals("q->~p") ) {	// q IMPLIES NOT p
+	        	    a = false;
+	        	    System.out.println("p\tq\t~p\tq implies not p");
+	        	    output.setText("p\tq\t~p\tq implies not p");
+	        	    do {
+	        	    	  b = false;
+	        	    	  do {
+	        	    		  	System.out.println(a + "\t" + b + "\t" + !a + "\t" + (!a || !b));
+	        	    		  	output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + (!a || !b));
+	        	    		  	b = !b;
+	        	    	  } while (b);
+	        	    	  a = !a;
+	        	    } while (a);
+	           }
+		       
+	           else if (text.equals("~q->~p")) {		// q IMPLIES p
+	                a = false;
+	                System.out.println("p\tq\t~p\t~q\tnot q implies not p");
+	                output.setText("p\tq\t~p\t~q\tnot q implies not p");
+	                do {
+	                      b = false;
+	                      do {
+	                            System.out.println(a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (!a || b));
+	                            output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + !a + "\t" + !b + "\t" + (!a || b));
+	                            b = !b;
+	                      } while (b);
+	                      a = !a;
+	                } while (a);
+	           }
+	           
+		       //End of two variable cases
+		       
+		       //Three variable cases
+		       
+		       //3 OR
+		       if (text.equals("pvqvr") || text.equals("pvrvq") || text.equals("qvpvr") || text.equals("qvrvp") || text.equals("rvpvq") || text.equals("rvqvp") ||
+		    	   text.equals("(pvq)vr") || text.equals("(pvr)vq") || text.equals("(qvp)vr") || text.equals("(qvr)vp") || text.equals("(rvp)vq") || text.equals("(rvq)vp") ||
+		    	   text.equals("pv(qvr)") || text.equals("pv(rvq)") || text.equals("qv(pvr)") || text.equals("qv(rvp)") || text.equals("rv(pvq)") || text.equals("rv(qvp)")){
+		    	   a = false;
+		    	   System.out.println("p\tq\tr\t" + eq.getText());
+		    	   output.setText("p\tq\tr\t" + eq.getText());
+		    	   do {
+		    		   b = false;
+		    		   do {
+		    			   c = false;
+		    			   do {
+		    				   System.out.println(a + "\t" + b + "\t" + c + "\t" +(a || b ||c));
+		    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" +(a || b ||c));
+		    				   c = !c;
+		    			   }while (c);
+		    			   b = !b;
+		    		   }while (b);
+		    		   a = !a;
+		    	   }while (a);
+		       }
+		       
+		       //3 OR not p
+		       if (text.equals("~pvqvr") || text.equals("~pvrvq") || text.equals("qv~pvr") || text.equals("qvrv~p") || text.equals("rv~pvq") || text.equals("rvqv~p") ||
+			    	   text.equals("(~pvq)vr") || text.equals("(~pvr)vq") || text.equals("(qv~p)vr") || text.equals("(qvr)v~p") || text.equals("(rv~p)vq") || text.equals("(rvq)v~p") ||
+			    	   text.equals("~pv(qvr)") || text.equals("~pv(rvq)") || text.equals("qv(~pvr)") || text.equals("qv(rv~p)") || text.equals("rv(~pvq)") || text.equals("rv(qv~p)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~p\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~p\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !a + "\t" + (!a || b ||c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !a + "\t" + (!a || b ||c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 OR not q
+		       if (text.equals("pv~qvr") || text.equals("pvrv~q") || text.equals("~qvpvr") || text.equals("~qvrvp") || text.equals("rvpv~q") || text.equals("rv~qvp") ||
+			    	   text.equals("(pv~q)vr") || text.equals("(pvr)v~q") || text.equals("(~qvp)vr") || text.equals("(~qvr)vp") || text.equals("(rvp)v~q") || text.equals("(rv~q)vp") ||
+			    	   text.equals("pv(~qvr)") || text.equals("pv(rv~q)") || text.equals("~qv(pvr)") || text.equals("~qv(rvp)") || text.equals("rv(pv~q)") || text.equals("rv(~qvp)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~q\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~q\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !b + "\t" + (a || !b ||c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !b + "\t" + (a || !b ||c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       //3 OR not r
+		       if (text.equals("pvqv~r") || text.equals("pv~rvq") || text.equals("qvpv~r") || text.equals("qv~rvp") || text.equals("~rvpvq") || text.equals("~rvqvp") ||
+			    	   text.equals("(pvq)v~r") || text.equals("(pv~r)vq") || text.equals("(qvp)v~r") || text.equals("(qv~r)vp") || text.equals("(~rvp)vq") || text.equals("(~rvq)vp") ||
+			    	   text.equals("pv(qv~r)") || text.equals("pv(~rvq)") || text.equals("qv(pv~r)") || text.equals("qv(~rvp)") || text.equals("~rv(pvq)") || text.equals("~rv(qvp)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~r\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~r\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !c + "\t" + (a || b || !c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !c + "\t" + (a || b || !c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 OR not q,p
+		       if (text.equals("~pv~qvr") || text.equals("~pvrv~q") || text.equals("~qv~pvr") || text.equals("~qvrv~p") || text.equals("rv~pv~q") || text.equals("rv~qv~p") ||
+			    	   text.equals("(~pv~q)vr") || text.equals("(~pvr)v~q") || text.equals("(~qv~p)vr") || text.equals("(~qvr)v~p") || text.equals("(rv~p)v~q") || text.equals("(rv~q)v~p") ||
+			    	   text.equals("~pv(~qvr)") || text.equals("~pv(rv~q)") || text.equals("~qv(~pvr)") || text.equals("~qv(rv~p)") || text.equals("rv(~pv~q)") || text.equals("rv(~qv~p)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~p\t~q\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~p\t~q\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !a + "\t" + !b + "\t" + (!a || !b ||c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !a + "\t" + !b + "\t" + (!a || !b ||c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 OR not p,r
+		       if (text.equals("~pvqv~r") || text.equals("~pv~rvq") || text.equals("qv~pv~r") || text.equals("qv~rv~p") || text.equals("~rv~pvq") || text.equals("~rvqv~p") ||
+			    	   text.equals("(~pvq)v~r") || text.equals("(~pv~r)vq") || text.equals("(qv~p)v~r") || text.equals("(qv~r)v~p") || text.equals("(~rv~p)vq") || text.equals("(~rvq)v~p") ||
+			    	   text.equals("~pv(qv~r)") || text.equals("~pv(~rvq)") || text.equals("qv(~pv~r)") || text.equals("qv(~rv~p)") || text.equals("~rv(~pvq)") || text.equals("~rv(qv~p)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~p\t~r\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~p\t~r\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !a + "\t" + !c + "\t" + (!a || b ||!c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !a + "\t" + !c + "\t" + (!a || b ||!c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 OR not q,r
+		       if (text.equals("pv~qv~r") || text.equals("pv~rv~q") || text.equals("~qvpv~r") || text.equals("~qv~rvp") || text.equals("~rvpv~q") || text.equals("~rv~qvp") ||
+			    	   text.equals("(pv~q)v~r") || text.equals("(pv~r)v~q") || text.equals("(~qvp)v~r") || text.equals("(~qv~r)vp") || text.equals("(~rvp)v~q") || text.equals("(~rv~q)vp") ||
+			    	   text.equals("pv(~qv~r)") || text.equals("pv(~rv~q)") || text.equals("~qv(pv~r)") || text.equals("~qv(~rvp)") || text.equals("~rv(pv~q)") || text.equals("~rv(~qvp)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~q\t~r\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~q\t~r\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !b + "\t" + !c + "\t" + (a || !b ||!c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !b + "\t" + !c + "\t" + (a || !b ||!c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 OR negate all
+		       if (text.equals("~pv~qv~r") || text.equals("~pv~rv~q") || text.equals("~qv~pv~r") || text.equals("~qv~rv~p") || text.equals("~rv~pv~q") || text.equals("~rv~qv~p") ||
+			    	   text.equals("(~pv~q)v~r") || text.equals("(~pv~r)v~q") || text.equals("(~qv~p)v~r") || text.equals("(~qv~r)v~p") || text.equals("(~rv~p)v~q") || text.equals("(~rv~q)v~p") ||
+			    	   text.equals("~pv(~qv~r)") || text.equals("~pv(~rv~q)") || text.equals("~qv(~pv~r)") || text.equals("~qv(~rv~p)") || text.equals("~rv(~pv~q)") || text.equals("~rv(~qv~p)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~p\t~q\t~r\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~p\t~q\t~r\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !a + "\t" + !b + "\t" + !c + "\t" + (!a || !b ||!c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !a + "\t" + !b + "\t" + !c + "\t" + (!a || !b ||!c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 AND
+		       else if (text.equals("p^q^r") || text.equals("p^r^q") || text.equals("q^p^r") || text.equals("q^r^p") || text.equals("r^p^q") || text.equals("r^q^p") ||
+			    	   text.equals("(p^q)^r") || text.equals("(p^r)^q") || text.equals("(q^p)^r") || text.equals("(q^r)^p") || text.equals("(r^p)^q") || text.equals("(r^q)^p") ||
+			    	   text.equals("p^(q^r)") || text.equals("p^(r^q)") || text.equals("q^(p^r)") || text.equals("q^(r^p)") || text.equals("r^(p^q)") || text.equals("r^(q^p)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" +(a && b && c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" +(a && b && c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 AND not p
+		       if (text.equals("~p^q^r") || text.equals("~p^r^q") || text.equals("q^~p^r") || text.equals("q^r^~p") || text.equals("r^~p^q") || text.equals("r^q^~p") ||
+			    	   text.equals("(~p^q)^r") || text.equals("(~p^r)^q") || text.equals("(q^~p)^r") || text.equals("(q^r)^~p") || text.equals("(r^~p)^q") || text.equals("(r^q)^~p") ||
+			    	   text.equals("~p^(q^r)") || text.equals("~p^(r^q)") || text.equals("q^(~p^r)") || text.equals("q^(r^~p)") || text.equals("r^(~p^q)") || text.equals("r^(q^~p)")){
+			    	   a = false;
+			    	   System.out.println("p\tq\tr\t~p\t" + eq.getText());
+			    	   output.setText("p\tq\tr\t~p\t" + eq.getText());
+			    	   do {
+			    		   b = false;
+			    		   do {
+			    			   c = false;
+			    			   do {
+			    				   System.out.println(a + "\t" + b + "\t" + c + "\t" + !a + "\t" + (!a && b && c));
+			    				   output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + !a + "\t" + (!a && b && c));
+			    				   c = !c;
+			    			   }while (c);
+			    			   b = !b;
+			    		   }while (b);
+			    		   a = !a;
+			    	   }while (a);
+			       }
+		       
+		       //3 AND not q
+		       
+		       
+		       //3 (p and q) or r
+		       else if (text.equals("(p^q)vr") || text.equals("(q^p)vr") || text.equals("rv(p^q)") || text.equals("rv(q^p)")){
+		    	   		a = false;
+		    	   		System.out.println("p\tq\tr\tp^q\t" + eq.getText());
+		    	   		output.setText("p\tq\tr\tp^q\t" + eq.getText());
+		    	   		do {
+		    	   			b = false;
+		    	   			do {
+		    	   				c = false;
+		    	   				do {
+		    	   					System.out.println(a + "\t" + b + "\t" + c + "\t" + (a && b) + "\t" + ((a && b) || c));
+		    	   					output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + (a && b) + "\t" + ((a && b) || c));
+		    	   					c = !c;
+		    	   				}while(c);
+		    	   				b = !b;
+		    	   			}while(b);
+		    	   			a =!a;
+		    	   		}while(a);
+		           }
+		       
+		       //3 (p and r) or q
+		       else if (text.equals("(p^r)vq") || text.equals("(r^p)vq") || text.equals("qv(p^r)") || text.equals("qv(r^p)")){
+	    	   		a = false;
+	    	   		System.out.println("p\tq\tr\tp^r\t" + eq.getText());
+	    	   		output.setText("p\tq\tr\tp^r\t" + eq.getText());
+	    	   		do {
+	    	   			b = false;
+	    	   			do {
+	    	   				c = false;
+	    	   				do {
+	    	   					System.out.println(a + "\t" + b + "\t" + c + "\t" + (a && c) + "\t" + ((a && c) || b));
+	    	   					output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + (a && c) + "\t" + ((a && c) || b));
+	    	   					c = !c;
+	    	   				}while(c);
+	    	   				b = !b;
+	    	   			}while(b);
+	    	   			a =!a;
+	    	   		}while(a);
+	           }
+		       
+		       //3 (q and r) or p
+		       else if (text.equals("(q^r)vp") || text.equals("(r^q)vp") || text.equals("pv(q^r)") || text.equals("pv(r^q)")){
+	    	   		a = false;
+	    	   		System.out.println("p\tq\tr\tq^r\t" + eq.getText());
+	    	   		output.setText("p\tq\tr\tq^r\t" + eq.getText());
+	    	   		do {
+	    	   			b = false;
+	    	   			do {
+	    	   				c = false;
+	    	   				do {
+	    	   					System.out.println(a + "\t" + b + "\t" + c + "\t" + (b && c) + "\t" + ((b && c) || a));
+	    	   					output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + (b && c) + "\t" + ((b && c) || a));
+	    	   					c = !c;
+	    	   				}while(c);
+	    	   				b = !b;
+	    	   			}while(b);
+	    	   			a =!a;
+	    	   		}while(a);
+	           }
+		       
+		       //3 (p or q) and r
+		       else if (text.equals("(pvq)^r") || text.equals("(qvp)^r") || text.equals("r^(pvq)") || text.equals("r^(qvp)")){
+	    	   		a = false;
+	    	   		System.out.println("p\tq\tr\tpvq\t" + eq.getText());
+	    	   		output.setText("p\tq\tr\tpvq\t" + eq.getText());
+	    	   		do {
+	    	   			b = false;
+	    	   			do {
+	    	   				c = false;
+	    	   				do {
+	    	   					System.out.println(a + "\t" + b + "\t" + c + "\t" + (a || b) + "\t" + ((a || b) && c));
+	    	   					output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + (a || b) + "\t" + ((a || b) && c));
+	    	   					c = !c;
+	    	   				}while(c);
+	    	   				b = !b;
+	    	   			}while(b);
+	    	   			a =!a;
+	    	   		}while(a);
+	           }
+		       
+		       //3 (p or r) and q
+		       else if (text.equals("(pvr)^q") || text.equals("(rvp)^q") || text.equals("q^(pvr)") || text.equals("q^(rvp)")){
+	    	   		a = false;
+	    	   		System.out.println("p\tq\tr\tpvr\t" + eq.getText());
+	    	   		output.setText("p\tq\tr\tpvr\t" + eq.getText());
+	    	   		do {
+	    	   			b = false;
+	    	   			do {
+	    	   				c = false;
+	    	   				do {
+	    	   					System.out.println(a + "\t" + b + "\t" + c + "\t" + (a || c) + "\t" + ((a || c) && b));
+	    	   					output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + (a || c) + "\t" + ((a || c) && b));
+	    	   					c = !c;
+	    	   				}while(c);
+	    	   				b = !b;
+	    	   			}while(b);
+	    	   			a =!a;
+	    	   		}while(a);
+	           }
+		       
+		       //3 (q or r) and p
+		       else if (text.equals("(rvq)^p") || text.equals("(qvr)^p") || text.equals("p^(rvq)") || text.equals("p^(qvr)")){
+	    	   		a = false;
+	    	   		System.out.println("p\tq\tr\tqvr\t" + eq.getText());
+	    	   		output.setText("p\tq\tr\tqvr\t" + eq.getText());
+	    	   		do {
+	    	   			b = false;
+	    	   			do {
+	    	   				c = false;
+	    	   				do {
+	    	   					System.out.println(a + "\t" + b + "\t" + c + "\t" + (b || c) + "\t" + ((b || c) && a));
+	    	   					output.setText(output.getText() + "\n" + a + "\t" + b + "\t" + c + "\t" + (b || c) + "\t" + ((b || c) && a));
+	    	   					c = !c;
+	    	   				}while(c);
+	    	   				b = !b;
+	    	   			}while(b);
+	    	   			a =!a;
+	    	   		}while(a);
+	           }
+		       
+		       
+		       
+		       //end of three variable cases
+		       eq.setText(null);
+	    	
+	    	  
+		        } //end of Enter Button
+		    
+			
+			
+			
+			}//end of actionPerformed
+		
+	}//end of buttonListener
+	
+	
+}//end of TablePanel 
